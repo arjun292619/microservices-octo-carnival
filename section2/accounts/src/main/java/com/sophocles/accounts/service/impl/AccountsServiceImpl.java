@@ -1,10 +1,13 @@
 package com.sophocles.accounts.service.impl;
 
 import com.sophocles.accounts.constants.AccountsConstants;
+import com.sophocles.accounts.dto.AccountsDto;
 import com.sophocles.accounts.dto.CustomerDto;
 import com.sophocles.accounts.entity.Accounts;
 import com.sophocles.accounts.entity.Customer;
 import com.sophocles.accounts.exceptions.CustomerAlreadyExistsException;
+import com.sophocles.accounts.exceptions.ResourceNotFoundException;
+import com.sophocles.accounts.mapper.AccountsMapper;
 import com.sophocles.accounts.mapper.CustomerMapper;
 import com.sophocles.accounts.repository.AccountsRepository;
 import com.sophocles.accounts.repository.CustomerRepository;
@@ -35,6 +38,21 @@ public class AccountsServiceImpl implements IAccountsService {
         customer.setCreatedBy("Admin");
         Customer savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
+    }
+
+    @Override
+    public CustomerDto fetchAccount(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobile Number", mobileNumber)
+        );
+
+        Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(
+                () -> new ResourceNotFoundException("Accounts", "customer id", customer.getCustomerId().toString())
+        );
+
+        CustomerDto customerDto = CustomerMapper.mapToCustomerDto(customer, new CustomerDto());
+        customerDto.setAccountsDto(AccountsMapper.mapToAccountsDto(accounts, new AccountsDto()));
+        return customerDto;
     }
 
     private Accounts createNewAccount(Customer customer) {
