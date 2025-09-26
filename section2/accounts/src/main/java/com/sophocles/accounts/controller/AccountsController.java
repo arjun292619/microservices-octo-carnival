@@ -2,9 +2,12 @@ package com.sophocles.accounts.controller;
 
 import com.sophocles.accounts.constants.AccountsConstants;
 import com.sophocles.accounts.dto.CustomerDto;
+import com.sophocles.accounts.dto.ErrorResponseDto;
 import com.sophocles.accounts.dto.ResponseDto;
 import com.sophocles.accounts.service.IAccountsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,7 +68,12 @@ public class AccountsController {
             @ApiResponse(responseCode = "200",
                     description = "HTTP Status OK"),
             @ApiResponse(responseCode = "500",
-                    description = "HTTP Status Internal Server Error")
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )),
+            @ApiResponse(responseCode = "417",
+                    description = "Expectation Failed"),
     })
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto) {
@@ -74,8 +82,8 @@ public class AccountsController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));
         } else {
-            return new ResponseEntity<>(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.MESSAGE_500)
-                    , HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDto(AccountsConstants.STATUS_417, AccountsConstants.MESSAGE_417_UPDATE)
+                    , HttpStatus.EXPECTATION_FAILED);
         }
     }
 
@@ -98,8 +106,8 @@ public class AccountsController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.STATUS_500));
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(AccountsConstants.MESSAGE_417_DELETE, AccountsConstants.MESSAGE_417_DELETE));
         }
     }
 }
