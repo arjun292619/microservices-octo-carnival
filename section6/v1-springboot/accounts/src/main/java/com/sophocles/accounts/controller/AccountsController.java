@@ -13,7 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +33,15 @@ public class AccountsController {
 
     private final IAccountsService iAccountsService;
 
+    @Value("${build.version}")
+    public String buildVersion;
+
+    @Autowired
+    private Environment environment;
+
     public AccountsController(IAccountsService iAccountsService) {
         this.iAccountsService = iAccountsService;
     }
-
-    @Value("${build.version}")
-    public String buildVersion;
 
     @Operation(
             summary = "Create Account REST api",
@@ -126,5 +131,16 @@ public class AccountsController {
     @GetMapping("/build-info")
     public ResponseEntity<String> getBuildInfo() {
         return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    }
+
+    @Operation(
+            summary = "Fetch Java version used for REST api",
+            description = "REST api to fetch Java version used for application"
+    )
+    @ApiResponse(responseCode = "200",
+            description = "HTTP Status OK")
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("MAVEN_HOME"));
     }
 }
