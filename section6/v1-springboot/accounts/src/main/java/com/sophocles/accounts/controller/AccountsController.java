@@ -1,6 +1,7 @@
 package com.sophocles.accounts.controller;
 
 import com.sophocles.accounts.constants.AccountsConstants;
+import com.sophocles.accounts.dto.AccountsContactInfoDto;
 import com.sophocles.accounts.dto.CustomerDto;
 import com.sophocles.accounts.dto.ErrorResponseDto;
 import com.sophocles.accounts.dto.ResponseDto;
@@ -38,6 +39,9 @@ public class AccountsController {
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private AccountsContactInfoDto accountsContactInfoDto;
 
     public AccountsController(IAccountsService iAccountsService) {
         this.iAccountsService = iAccountsService;
@@ -142,5 +146,16 @@ public class AccountsController {
     @GetMapping("/java-version")
     public ResponseEntity<String> getJavaVersion() {
         return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("MAVEN_HOME"));
+    }
+
+    @Operation(
+            summary = "Fetch Contact info of support for REST api",
+            description = "REST api to fetch JContact Info of support for application"
+    )
+    @ApiResponse(responseCode = "200",
+            description = "HTTP Status OK")
+    @GetMapping("/contact-info")
+    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+        return ResponseEntity.status(HttpStatus.OK).body(accountsContactInfoDto);
     }
 }
