@@ -7,7 +7,9 @@ spring:
     config:
       server:
         native:
-          search-location: "classpath:/config"
+          search-locations: "file:///Users//prashanthiarjun//Documents//config"
+#          search-location: "classpath:/config"1
+
 
 server:
   port: 8071
