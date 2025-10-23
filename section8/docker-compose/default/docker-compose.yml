@@ -31,9 +31,9 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "eurekaserver"
 
-  accounts:
+  accounts1:
     image: "jcarjunreddy/accounts:s8"
-    container_name: "accounts-ms"
+    container_name: "accounts-ms1"
     ports:
       - "8080:8080"
     networks:
@@ -44,11 +44,35 @@ services:
       file: common-config.yml
       service: microservice-eureka-config
 
-  loans:
+  accounts2:
+    image: "jcarjunreddy/accounts:s8"
+    container_name: "accounts-ms2"
+    ports:
+      - "8081:8080"
+    networks:
+      - bankms
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
+  loans1:
     image: "jcarjunreddy/loans:s8"
-    container_name: "loans-ms"
+    container_name: "loans-ms1"
     ports:
       - "8090:8090"
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
+  loans2:
+    image: "jcarjunreddy/loans:s8"
+    container_name: "loans-ms2"
+    ports:
+      - "8091:8090"
     environment:
       SPRING_APPLICATION_NAME: "loans"
     extends:
