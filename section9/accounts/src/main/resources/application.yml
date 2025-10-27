@@ -48,3 +48,9 @@ info:
     name: "accounts"
     description: "Bank Accounts application"
     version: "1.0.0"
+
+logging:
+  level:
+    com:
+      sophocles:
+        accounts: DEBUG

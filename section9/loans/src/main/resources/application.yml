@@ -48,3 +48,9 @@ management:
   info:
     env:
       enabled: true
+
+logging:
+  level:
+    com:
+      sophocles:
+        loans: DEBUG
