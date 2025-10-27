@@ -30,9 +30,18 @@ management:
   endpoint:
     shutdown:
       access: UNRESTRICTED
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+
 
 eureka:
   instance:
