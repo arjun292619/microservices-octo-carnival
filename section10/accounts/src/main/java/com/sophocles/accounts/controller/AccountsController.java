@@ -150,7 +150,7 @@ public class AccountsController {
 
     @Operation(
             summary = "Fetch Contact info of support for REST api",
-            description = "REST api to fetch JContact Info of support for application"
+            description = "REST api to fetch Contact Info of support for application"
     )
     @ApiResponse(responseCode = "200",
             description = "HTTP Status OK")
