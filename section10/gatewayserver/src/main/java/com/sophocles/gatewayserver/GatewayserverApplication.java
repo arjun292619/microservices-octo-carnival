@@ -22,7 +22,8 @@ public class GatewayserverApplication {
                         p.path("/sophocles/accounts/**")
                                 .filters(f ->
                                         f.rewritePath("/sophocles/accounts/(?<segment>.*)", "/${segment}")
-                                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+                                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+                                                .circuitBreaker(config -> config.setName("accountsCircuitBreaker")))
                                 .uri("lb://ACCOUNTS"))
                 .route(p ->
                         p.path("/sophocles/cards/**")
