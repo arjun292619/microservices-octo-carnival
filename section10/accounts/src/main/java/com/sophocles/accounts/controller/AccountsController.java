@@ -144,8 +144,8 @@ public class AccountsController {
     public ResponseEntity<String> getBuildInfo() throws TimeoutException {
         logger.debug("getBuildInfo() method invoked");
 //        throw new NullPointerException();
-        throw new TimeoutException();
-//        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+//        throw new TimeoutException();
+        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
     }
 
     public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
