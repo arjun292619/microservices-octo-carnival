@@ -6,6 +6,7 @@ import com.sophocles.accounts.dto.CustomerDto;
 import com.sophocles.accounts.dto.ErrorResponseDto;
 import com.sophocles.accounts.dto.ResponseDto;
 import com.sophocles.accounts.service.IAccountsService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -133,8 +134,13 @@ public class AccountsController {
     @ApiResponse(responseCode = "200",
             description = "HTTP Status OK")
     @GetMapping("/build-info")
+    @Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallback")
     public ResponseEntity<String> getBuildInfo() {
         return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    }
+
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        return ResponseEntity.status(HttpStatus.OK).body("0.9");
     }
 
     @Operation(
