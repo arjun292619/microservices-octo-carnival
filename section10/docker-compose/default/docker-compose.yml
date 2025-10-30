@@ -1,6 +1,19 @@
 services:
+  redis:
+    image: redis
+    container_name: redis-service
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      timeout: 10s
+      retries: 10
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   configserver:
-    image: "jcarjunreddy/configserver:s9"
+    image: "jcarjunreddy/configserver:s10"
     container_name: "configserver-ms"
     ports:
       - "8071:8071"
@@ -15,7 +28,7 @@ services:
       service: microservice-base-config
 
   eurekaserver:
-    image: "jcarjunreddy/eurekaserver:s9"
+    image: "jcarjunreddy/eurekaserver:s10"
     container_name: "eurekaserver-ms"
     ports:
       - "8070:8070"
@@ -32,7 +45,7 @@ services:
       SPRING_APPLICATION_NAME: "eurekaserver"
 
   accounts:
-    image: "jcarjunreddy/accounts:s9"
+    image: "jcarjunreddy/accounts:s10"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
@@ -51,7 +64,7 @@ services:
       service: microservice-eureka-config
 
   loans:
-    image: "jcarjunreddy/loans:s9"
+    image: "jcarjunreddy/loans:s10"
     container_name: "loans-ms"
     ports:
       - "8090:8090"
@@ -68,7 +81,7 @@ services:
       service: microservice-eureka-config
 
   cards:
-    image: "jcarjunreddy/cards:s9"
+    image: "jcarjunreddy/cards:s10"
     container_name: "cards-ms"
     ports:
       - "9000:9000"
@@ -85,7 +98,7 @@ services:
       service: microservice-eureka-config
 
   gatewayserver:
-    image: "jcarjunreddy/gatewayserver:s9"
+    image: "jcarjunreddy/gatewayserver:s10"
     container_name: "gatewayserver-ms"
     ports:
       - "8072:8072"
@@ -96,8 +109,14 @@ services:
         condition: service_healthy
       cards:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "gatewayserver"
+      SPRING_DATA_REDIS_CONNECT-TIMEOUT: 2s
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_TIMEOUT: 1s
     extends:
       file: common-config.yml
       service: microservice-eureka-config
