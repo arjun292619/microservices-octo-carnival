@@ -161,9 +161,13 @@ public class AccountsController {
     @ApiResponse(responseCode = "200",
             description = "HTTP Status OK")
     @GetMapping("/java-version")
-    @RateLimiter(name = "getJavaVersionLimiter")
+    @RateLimiter(name = "getJavaVersionLimiter", fallbackMethod = "getJavaVersionFallback")
     public ResponseEntity<String> getJavaVersion() {
         return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("MAVEN_HOME"));
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback(Throwable throwable) {
+        return ResponseEntity.status(HttpStatus.OK).body("Java 17");
     }
 
     @Operation(
